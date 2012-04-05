@@ -1,9 +1,6 @@
 # local dependencies
 from .version import __version__
 
-# external dependencies
-from decorator import decorator
-
 # stdlib
 from inspect import getargspec
 

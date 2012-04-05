@@ -16,7 +16,6 @@ setup(
         "Topic :: Database :: Front-Ends",
         "License :: OSI Approved :: MIT License",
     ],
-    requires=["decorator"],
     keywords="cache decorator humans",
     packages=find_packages(),
 )
