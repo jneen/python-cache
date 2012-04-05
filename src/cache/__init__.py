@@ -28,6 +28,7 @@ class Cache:
     bust       If `True`, the values in the backend cache will be
                ignored, and new data will be calculated and written
                over the old values.
+               Default: False
 
     """
 
