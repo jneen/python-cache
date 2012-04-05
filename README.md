@@ -53,3 +53,9 @@ The remaining options, if given, will be passed as keyword arguments to the back
 def expensive_method():
     # ...
 ```
+
+### P.S.
+
+If you're a Ruby user, check out the analogous [Cacher][] library for Ruby
+
+[Cacher]: https://github.com/jayferd/cacher
