@@ -6,6 +6,7 @@ setup(
     version=__version__,
     description="caching for humans",
     author="Jay Adkisson",
+    url="https://github.com/jayferd/python-cache",
     author_email="j4yferd at gmail dot com (humans only, please)",
     license="MIT",
     classifiers=[
