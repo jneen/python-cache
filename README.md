@@ -45,3 +45,11 @@ Options can be passed to either the `Cache` constructor or the decorator.  Optio
                ignored, and new data will be calculated and written
                over the old values.
                Default: False
+
+The remaining options, if given, will be passed as keyword arguments to the backend's `set` method.  This is useful for things like expiration times - for example, using pylibmc:
+
+``` python
+@cache("some_key", time=1000)
+def expensive_method():
+    # ...
+```
