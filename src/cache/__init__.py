@@ -20,9 +20,9 @@ class Cache:
 
     Keyword Arguments:
     enabled    If `False`, the backend cache will not be used at all,
-               and your functions will be run as-is.  This is useful
-               for development, when the backend cache may not be
-               present at all.
+               and your functions will be run as-is, even when you call
+               `.cached()`.  This is useful for development, when the
+               function may be changing rapidly.
                Default: True
 
     bust       If `True`, the values in the backend cache will be

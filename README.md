@@ -36,9 +36,9 @@ some_expensive_method.cached(default=3)
 Options can be passed to either the `Cache` constructor or the decorator.  Options passed to the decorator take precedence.  Available options are:
 
     enabled    If `False`, the backend cache will not be used at all,
-               and your functions will be run as-is.  This is useful
-               for development, when the backend cache may not be
-               present at all.
+               and your functions will be run as-is, even when you call
+               `.cached()`.  This is useful for development, when the
+               function may be changing rapidly.
                Default: True
 
     bust       If `True`, the values in the backend cache will be
@@ -53,6 +53,12 @@ The remaining options, if given, will be passed as keyword arguments to the back
 def expensive_method():
     # ...
 ```
+
+## Local Caches
+
+Cache provides two "fake" caches for local development without a backend cache: `LocalCache` and `NullCache`.  `LocalCache` uses a dictionary in place of a backend cache, and `NullCache` is a noop on `set` and always returns `None` on `get`.
+
+The difference between passing `enabled=False` to the cache and using `NullCache` comes in when you use the `.cached()` method.  If the cache is disabled, `.cached()` will run the underlying function, but `NullCache` will throw a `KeyError` as if the key was not present.
 
 ### P.S.
 
