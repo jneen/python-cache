@@ -113,14 +113,18 @@ class CacheWrapper:
 
         return self._unprepare_value(cached)
 
-    # these two methods are needed to deal with potentially falsy
-    # values being returned from the cache.  There's probably
-    # a better way.
+    CACHE_NONE = '___CACHE_NONE___'
     def _prepare_value(self, value):
-        return { 'value': value }
+        if value is None:
+            return self.CACHE_NONE
+
+        return value
 
     def _unprepare_value(self, prepared):
-        return prepared['value']
+        if prepared == self.CACHE_NONE:
+            return None
+
+        return prepared
 
     def refresh(self):
         fresh = self.calculate()
