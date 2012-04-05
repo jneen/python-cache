@@ -101,41 +101,33 @@ class CacheWrapper:
         if len(getargspec(calculate).args) > 0:
             raise TypeError("cannot cache a function with arguments")
 
-    def cached(self, default='__absent__'):
-        cached = None
-        if self.enabled and not self.bust:
-            cached = self.backend.get(self.key)
+    def cached(self, **kw):
+        if not self.enabled:
+            return self.calculate()
+
+        cached = self.backend.get(self.key)
 
         if cached is None:
-            if default == '__absent__':
-                raise KeyError
+            if 'default' in kw:
+                return kw['default']
 
-            return default
+            raise KeyError
 
-        return self._unprepare_value(cached)
+        return _unprepare_value(cached)
 
-    CACHE_NONE = '___CACHE_NONE___'
-    def _prepare_value(self, value):
-        if value is None:
-            return self.CACHE_NONE
-
-        return value
-
-    def _unprepare_value(self, prepared):
-        if prepared == self.CACHE_NONE:
-            return None
-
-        return prepared
 
     def refresh(self):
         fresh = self.calculate()
         if self.enabled:
-            value = self._prepare_value(fresh)
+            value = _prepare_value(fresh)
             self.backend.set(self.key, value, **self.options)
 
         return fresh
 
     def get(self):
+        if self.bust:
+            return self.refresh()
+
         try:
             return self.cached()
         except KeyError:
@@ -143,3 +135,34 @@ class CacheWrapper:
 
     def __call__(self):
         return self.get()
+
+_CACHE_NONE = '___CACHE_NONE___'
+
+def _prepare_value(value):
+    if value is None:
+        return _CACHE_NONE
+
+    return value
+
+def _unprepare_value(prepared):
+    if prepared == _CACHE_NONE:
+        return None
+
+    return prepared
+
+class LocalCache:
+    def __init__(self):
+        self._cache = {}
+
+    def set(self, key, val, **kw):
+        self._cache[key] = val
+
+    def get(self, key):
+        return self._cache.get(key)
+
+class NullCache:
+    def set(self, key, val, **kw):
+        pass
+
+    def get(self, key):
+        return None
