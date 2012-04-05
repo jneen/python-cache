@@ -12,8 +12,8 @@ class Cache:
         'enabled': True
     }
 
-    def __init__(self, cache, **default_options):
-        self.cache = cache
+    def __init__(self, backend, **default_options):
+        self.backend = backend
         self.default_options = self.DEFAULT_OPTIONS.copy()
         self.default_options.update(default_options)
 
@@ -22,13 +22,13 @@ class Cache:
         opts.update(kw)
 
         def _cache(fn):
-            return CacheWrapper(self.cache, key, fn, **opts)
+            return CacheWrapper(self.backend, key, fn, **opts)
 
         return _cache
 
 class CacheWrapper:
-    def __init__(self, cache, key, calculate, **kw):
-        self.cache = cache
+    def __init__(self, backend, key, calculate, **kw):
+        self.backend = backend
         self.key = key
         self.calculate = calculate
         self.options = kw
@@ -39,7 +39,7 @@ class CacheWrapper:
     def cached(self, default='__absent__'):
         cached = None
         if self.options.get('enabled') and not self.options.get('bust'):
-            cached = self.cache.get(self.key)
+            cached = self.backend.get(self.key)
 
         if cached is None:
             if default == '__absent__':
@@ -59,7 +59,7 @@ class CacheWrapper:
         fresh = self.calculate()
         if self.options.get('enabled'):
             value = self._prepare_value(fresh)
-            self.cache.set(self.key, value, **self.options)
+            self.backend.set(self.key, value, **self.options)
 
         return fresh
 
