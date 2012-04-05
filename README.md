@@ -1,5 +1,9 @@
 # cache: caching for humans
 
+## Installation
+
+    pip install cache
+
 ## Usage:
 
 ``` python
