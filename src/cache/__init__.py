@@ -4,6 +4,7 @@ from .version import __version__
 # stdlib
 from inspect import getargspec
 
+
 class Cache:
     """
     Creates a cache decorator factory.
@@ -56,7 +57,6 @@ class Cache:
 
         """
 
-
         opts = self.default_options.copy()
         opts.update(kw)
 
@@ -64,6 +64,7 @@ class Cache:
             return CacheWrapper(self.backend, key, fn, **opts)
 
         return _cache
+
 
 class CacheWrapper:
     """
@@ -112,7 +113,6 @@ class CacheWrapper:
 
         return _unprepare_value(cached)
 
-
     def refresh(self):
         fresh = self.calculate()
         if self.enabled:
@@ -135,17 +135,20 @@ class CacheWrapper:
 
 _CACHE_NONE = '___CACHE_NONE___'
 
+
 def _prepare_value(value):
     if value is None:
         return _CACHE_NONE
 
     return value
 
+
 def _unprepare_value(prepared):
     if prepared == _CACHE_NONE:
         return None
 
     return prepared
+
 
 class LocalCache:
     def __init__(self):
@@ -156,6 +159,7 @@ class LocalCache:
 
     def get(self, key):
         return self._cache.get(key)
+
 
 class NullCache:
     def set(self, key, val, **kw):
