@@ -30,8 +30,8 @@ class Cache:
 
     """
 
-    def __init__(self, backend, **default_options):
-        self.backend = backend
+    def __init__(self, backend=None, **default_options):
+        self.backend = backend or LocalCache()
         self.default_options = default_options
 
     def __call__(self, key, **kw):
