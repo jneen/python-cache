@@ -38,7 +38,7 @@ class Cache:
         """
         Returns the decorator itself
             @cache("mykey", ...)
-            def expensive_method
+            def expensive_method():
                 # ...
 
             # or in the absence of decorators
