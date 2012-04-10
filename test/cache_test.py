@@ -75,3 +75,20 @@ def test_key_default():
         return 1
 
     assert some_method_name.key == '<cache>/some_method_name'
+
+
+def test_arguments():
+    backend = LocalCache()
+    cache = Cache(backend)
+
+    @cache("mykey")
+    def expensive(*a, **kw):
+        pass
+
+    expensive(1, foo=2)
+    expensive(1, foo=2)
+
+    keys = backend._cache.keys()
+
+    assert len(keys) == 1, "only one key is set"
+    assert ("mykey/args:") in keys[0]

@@ -1,9 +1,6 @@
 # local dependencies
 from .version import __version__
 
-# stdlib
-from inspect import getargspec
-
 
 class Cache:
     """
@@ -97,42 +94,48 @@ class CacheWrapper:
 
         self.options = kw
 
-        if len(getargspec(calculate).args) > 0:
-            raise TypeError("cannot cache a function with arguments")
-
-    def cached(self, **kw):
+    def cached(self, *a, **kw):
         if not self.enabled:
             return self.calculate()
 
-        cached = self.backend.get(self.key)
+        default_given = False
+        default_val = None
+
+        if 'default' in kw:
+            default_given = True
+            default_val = kw.pop('default')
+
+        key = _prepare_key(self.key, *a, **kw)
+        cached = self.backend.get(key)
 
         if cached is None:
-            if 'default' in kw:
-                return kw['default']
+            if default_given:
+                return default_val
 
             raise KeyError
 
         return _unprepare_value(cached)
 
-    def refresh(self):
+    def refresh(self, *a, **kw):
         fresh = self.calculate()
         if self.enabled:
+            key = _prepare_key(self.key, *a, **kw)
             value = _prepare_value(fresh)
-            self.backend.set(self.key, value, **self.options)
+            self.backend.set(key, value, **self.options)
 
         return fresh
 
-    def get(self):
+    def get(self, *a, **kw):
         if self.bust:
-            return self.refresh()
+            return self.refresh(*a, **kw)
 
         try:
-            return self.cached()
+            return self.cached(*a, **kw)
         except KeyError:
-            return self.refresh()
+            return self.refresh(*a, **kw)
 
-    def __call__(self):
-        return self.get()
+    def __call__(self, *a, **kw):
+        return self.get(*a, **kw)
 
 _CACHE_NONE = '___CACHE_NONE___'
 
@@ -149,6 +152,22 @@ def _unprepare_value(prepared):
         return None
 
     return prepared
+
+
+def _prepare_key(key, *args, **kwargs):
+    """
+    if arguments are given, adds a hash of the args to the key.
+    """
+
+    if not args and not kwargs:
+        return key
+
+    items = kwargs.items()
+    items.sort()
+    hashable_args = (args, tuple(items))
+    args_key = hash(hashable_args)
+
+    return "%s/args:%x" % (key, args_key)
 
 
 class LocalCache:
