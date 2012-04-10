@@ -22,5 +22,6 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     keywords="cache decorator humans",
-    packages=find_packages(),
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
 )
