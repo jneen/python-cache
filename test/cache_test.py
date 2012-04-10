@@ -64,3 +64,14 @@ def test_null():
         pass
 
     assert not backend.get("counter")
+
+
+def test_key_default():
+    backend = LocalCache
+    cache = Cache(backend)
+
+    @cache()
+    def some_method_name():
+        return 1
+
+    assert some_method_name.key == '<cache>/some_method_name'

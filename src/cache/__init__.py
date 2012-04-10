@@ -34,7 +34,7 @@ class Cache:
         self.backend = backend or LocalCache()
         self.default_options = default_options
 
-    def __call__(self, key, **kw):
+    def __call__(self, key=None, **kw):
         """
         Returns the decorator itself
             @cache("mykey", ...)
@@ -61,7 +61,8 @@ class Cache:
         opts.update(kw)
 
         def _cache(fn):
-            return CacheWrapper(self.backend, key, fn, **opts)
+            k = key or '<cache>/%s' % fn.__name__
+            return CacheWrapper(self.backend, k, fn, **opts)
 
         return _cache
 
