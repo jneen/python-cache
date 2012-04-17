@@ -104,8 +104,17 @@ def test_arguments():
 
     expensive(1, foo=2)
     expensive(1, foo=2)
+    expensive(2, foo=3)
 
     keys = backend._cache.keys()
 
-    assert len(keys) == 1, "only one key is set"
+    assert len(keys) == 2, "only two keys are set"
     assert ("mykey/args:") in keys[0]
+
+    # arguments must be hashable
+    try:
+        expensive([1, 2, 3])
+    except TypeError as e:
+        assert e.message == "unhashable type: 'list'"
+    else:
+        assert False, "should throw TypeError"
