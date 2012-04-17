@@ -84,37 +84,40 @@ class CacheWrapper:
     """
 
     def __init__(self, backend, key, calculate,
-                 bust=False, enabled=True, **kw):
+                 bust=False, enabled=True, default='__absent__', **kw):
         self.backend = backend
         self.key = key
         self.calculate = calculate
+        self.default = default
 
         self.bust = bust
         self.enabled = enabled
 
         self.options = kw
 
-    def cached(self, *a, **kw):
+    def _has_default(self):
+        return self.default != '__absent__'
+
+    def _get_cached(self, *a, **kw):
         if not self.enabled:
             return self.calculate()
-
-        default_given = False
-        default_val = None
-
-        if 'default' in kw:
-            default_given = True
-            default_val = kw.pop('default')
 
         key = _prepare_key(self.key, *a, **kw)
         cached = self.backend.get(key)
 
         if cached is None:
-            if default_given:
-                return default_val
-
             raise KeyError
 
         return _unprepare_value(cached)
+
+    def cached(self, *a, **kw):
+        try:
+            return self._get_cached(*a, **kw)
+        except KeyError as e:
+            if self._has_default():
+                return self.default
+            else:
+                raise e
 
     def refresh(self, *a, **kw):
         fresh = self.calculate()
@@ -130,7 +133,7 @@ class CacheWrapper:
             return self.refresh(*a, **kw)
 
         try:
-            return self.cached(*a, **kw)
+            return self._get_cached(*a, **kw)
         except KeyError:
             return self.refresh(*a, **kw)
 

@@ -29,10 +29,8 @@ some_expensive_method()
 some_expensive_method.refresh()
 
 # get the cached value or throw an error
+# (unless default= was passed to @cache(...))
 some_expensive_method.cached()
-
-# get the cached value or return 3
-some_expensive_method.cached(default=3)
 ```
 
 ## Options
@@ -49,6 +47,9 @@ Options can be passed to either the `Cache` constructor or the decorator.  Optio
                ignored, and new data will be calculated and written
                over the old values.
                Default: False
+
+    default    If given, `.cached()` will return the given value instead
+               of raising a KeyError.
 
 The remaining options, if given, will be passed as keyword arguments to the backend's `set` method.  This is useful for things like expiration times - for example, using pylibmc:
 

@@ -51,16 +51,34 @@ def test_null():
     backend = NullCache()
     cache = Cache(backend)
 
-    c = cache("counter")(CallCounter())
+    cc = CallCounter()
+
+    c = cache("counter")(cc)
 
     assert c() == 1
     assert c() == 2
-    assert c.cached(default=42) == 42
     try:
         c.cached()
-        assert False, 'should raise an error'
     except KeyError:
         pass
+    else:
+        assert False, "should raise KeyError"
+
+
+def test_default():
+    backend = NullCache()
+    cache = Cache(backend)
+
+    cc = CallCounter()
+
+    c = cache("counter", default=42)(cc)
+
+    assert c() == 1
+    assert c() == 2
+
+    # because we're using NullCache, the cache should always be
+    # empty.
+    assert c.cached() == 42
 
     assert not backend.get("counter")
 
