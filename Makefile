@@ -2,6 +2,8 @@ PYTHON ?= python
 NOSE ?= nosetests
 PEP8 ?= pep8
 
+CLEAN += build/ dist/
+
 SETUP = $(PYTHON) setup.py
 
 upload:
@@ -12,3 +14,6 @@ test: style
 
 style:
 	$(PEP8) src/ test/
+
+clean:
+	rm -rf $(CLEAN)
