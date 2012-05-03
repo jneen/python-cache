@@ -15,7 +15,7 @@ setup(
     author_email="j4yferd at gmail dot com (humans only, please)",
     license="MIT",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "Topic :: Database :: Front-Ends",
