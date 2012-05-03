@@ -9,7 +9,7 @@ SETUP = $(PYTHON) setup.py
 test: style
 	$(NOSE)
 
-upload:
+upload: test
 	$(SETUP) sdist upload
 
 style:
