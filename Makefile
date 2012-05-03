@@ -6,11 +6,11 @@ CLEAN += build/ dist/
 
 SETUP = $(PYTHON) setup.py
 
-upload:
-	$(SETUP) sdist upload
-
 test: style
 	$(NOSE)
+
+upload:
+	$(SETUP) sdist upload
 
 style:
 	$(PEP8) src/ test/
