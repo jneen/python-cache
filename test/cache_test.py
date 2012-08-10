@@ -95,6 +95,18 @@ def test_key_default():
 
 
 def test_arguments():
+    cache = Cache(LocalCache())
+
+    @cache("mykey")
+    def return_arguments(*a, **kw):
+        return (a, kw)
+
+    result = (return_arguments(1, two=2) == ((1,), dict(two=2)))
+
+    assert result, 'arguments are passed in to the calculated function'
+
+
+def test_hash_arguments():
     backend = LocalCache()
     cache = Cache(backend)
 
