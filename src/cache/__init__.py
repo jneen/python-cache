@@ -100,7 +100,7 @@ class CacheWrapper:
 
     def _get_cached(self, *a, **kw):
         if not self.enabled:
-            return self.calculate()
+            return self.calculate(*a, **kw)
 
         key = _prepare_key(self.key, *a, **kw)
         cached = self.backend.get(key)
@@ -120,7 +120,7 @@ class CacheWrapper:
                 raise e
 
     def refresh(self, *a, **kw):
-        fresh = self.calculate()
+        fresh = self.calculate(*a, **kw)
         if self.enabled:
             key = _prepare_key(self.key, *a, **kw)
             value = _prepare_value(fresh)
