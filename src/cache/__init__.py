@@ -1,3 +1,6 @@
+import hashlib
+import pickle
+
 # local dependencies
 from .version import __version__
 
@@ -168,9 +171,9 @@ def _prepare_key(key, *args, **kwargs):
     items = kwargs.items()
     items.sort()
     hashable_args = (args, tuple(items))
-    args_key = hash(hashable_args)
+    args_key = hashlib.md5(pickle.dumps(hashable_args)).hexdigest()
 
-    return "%s/args:%x" % (key, args_key)
+    return "%s/args:%s" % (key, args_key)
 
 
 class LocalCache:
