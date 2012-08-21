@@ -122,11 +122,3 @@ def test_hash_arguments():
 
     assert len(keys) == 2, "only two keys are set"
     assert ("mykey/args:") in keys[0]
-
-    # arguments must be hashable
-    try:
-        expensive([1, 2, 3])
-    except TypeError as e:
-        assert e.message == "unhashable type: 'list'"
-    else:
-        assert False, "should throw TypeError"
