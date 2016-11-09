@@ -118,7 +118,7 @@ def test_hash_arguments():
     expensive(1, foo=2)
     expensive(2, foo=3)
 
-    keys = backend._cache.keys()
+    keys = list(backend._cache.keys())
 
     assert len(keys) == 2, "only two keys are set"
     assert ("mykey/args:") in keys[0]
