@@ -1,5 +1,6 @@
 import hashlib
 import pickle
+import time
 
 # local dependencies
 from .version import __version__
@@ -184,6 +185,28 @@ class LocalCache:
 
     def get(self, key):
         return self._cache.get(key)
+
+
+class LocalExpireCache:
+    def __init__(self):
+        self._cache = {}
+        self._expire = {}
+
+    def set(self, key, val, **kw):
+        self._cache[key] = val
+        if kw.get('time', -1) == -1:
+            self._expire[key] = -1
+        else:
+            self._expire[key] = time.time() + kw['time']
+
+    def get(self, key):
+        if key in self._cache:
+            if self._expire[key] == -1 or self._expire[key] > time.time():
+                return self._cache.get(key)
+            else:
+                del self._cache[key]
+                del self._expire[key]
+        return None
 
 
 class NullCache:
