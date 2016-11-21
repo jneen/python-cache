@@ -168,8 +168,7 @@ def _prepare_key(key, *args, **kwargs):
     if not args and not kwargs:
         return key
 
-    items = kwargs.items()
-    items.sort()
+    items = sorted(kwargs.items())
     hashable_args = (args, tuple(items))
     args_key = hashlib.md5(pickle.dumps(hashable_args)).hexdigest()
 
